@@ -21,14 +21,13 @@
 					Ever wondered where the artists you listen to come from?</p>
 					<p class="info">
 					Or if there are any good bands from <span id="randomCountry"></span></p>
-					
+
 					<p align="center"><h4>Wonder no more!</h4></p>
 		            <p class="info">Enter your Last.fm username in the field below. If you don't have Last.fm, <a href="http://last.fm">get it here!</a></p>
 					<form id="start" class="no-select" target="_self">
 						<input name="username" class="usernameinput" placeholder="Last.fm username" type="text" autofocus required>
 						<div class="gobutton"><input type="submit" value=""></div>
 					</form>
-			
 				</div>
 
 				<div id="faqtext" class="faq hidden">
@@ -42,12 +41,12 @@
                     <p class="details-p">Do you have any other questions or feedback? Send us an email at <a href="mailto:explr.fm@gmail.com">explr.fm@gmail.com</a> or check out our <a href="http://www.reddit.com/r/Music/comments/22n6t8/lastfm_user_heres_an_interactive_map_to_show_the/">reddit post</a>.</p>
 				</div>
 			</div>
-
-
 			<p class="faq-link splash"><a>Frequently asked questions -></a></p>
 			<p class="faq-link faq hidden"><a><- Go back</a></p>
 
-			<p id="made-by">Made by <a href="http://se.linkedin.com/pub/anna-movin/50/463/1a0" target="_blank">Anna</a>, <a href="http://se.linkedin.com/pub/daniel-molin/82/211/b75" target="_blank">Daniel</a>, <a href="http://se.linkedin.com/pub/moa-bergsmark/49/554/93a" target="_blank">Moa</a> and <a href="http://se.linkedin.com/in/tommyfeldt" target="_blank">Tommy</a>. | 
+			<p id="made-by">Made by <a href="http://se.linkedin.com/pub/anna-movin/50/463/1a0" target="_blank">Anna</a>, <a href="http://se.linkedin.com/pub/daniel-molin/82/211/b75" target="_blank">Daniel</a>, <a href="http://se.linkedin.com/pub/moa-bergsmark/49/554/93a" target="_blank">Moa</a> and <a href="http://se.linkedin.com/in/tommyfeldt" target="_blank">Tommy</a>.</p>
+			<div class="ad-container"><img src="" width="234"></div>
+
 		</div>
 	</div>
 	<div id="map-container"></div>
@@ -69,7 +68,6 @@
 	</div>
 
 	<a href="./"  target="_self">
-
 	<div id="change-user-button" class="change-button on-map-view no-select">
 		<img src="static/img/remove-user.png" alt="" width="32" height="32">
 		<p>Change user</p>
@@ -122,7 +120,7 @@
     </script>
 
 	<!-- Remove placeholder text on focus, return on blur -->
-<script>
+	<script>
 	    d3.selectAll('input, text').on("focus", function(){
 	    	//Save placeholder as data
 	    	d3.select(this).data([d3.select(this).attr('placeholder')]);
