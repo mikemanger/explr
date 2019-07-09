@@ -296,7 +296,7 @@ var CACHED_NO_COUNTRIES = JSON.parse(window.localStorage.no_countries || "{}");
         var welcomeOverlay = d3.select("#welcome-container");
         welcomeOverlay.transition().duration(2000)
             .style("opacity", 0)
-            .each("end", function () {
+            .on("end", function () {
                 welcomeOverlay.remove();
             });
 
@@ -403,7 +403,7 @@ var CACHED_NO_COUNTRIES = JSON.parse(window.localStorage.no_countries || "{}");
         var loader = d3.select(".loader");
         loader.transition().duration(2000)
             .style("opacity", 0)
-            .each("end", function () {
+            .on("end", function () {
                 loader.remove();
             });
         //Also fade out progress bar text (after a short delay)

@@ -17,7 +17,7 @@ var countryScore = 0;
   var doThrottle = false;
   var filter = "artists"; // filter by artists or plays
 
-  var zoom = d3.behavior.zoom()
+  var zoom = d3.zoom()
     .scaleExtent([1, 9])
     .on("zoom", move);
 
@@ -111,7 +111,7 @@ var countryScore = 0;
     };
 
 
-    color = d3.scale.threshold()
+    color = d3.scaleThreshold()
       .domain(mydomain)
       .range(colorArray);
   };
@@ -144,6 +144,9 @@ var countryScore = 0;
       .attr("x", x)
       .attr("y", height - y - mydomain.length * ls_h - 1.5 * ls_h)
       .text("Number of ");
+    if ( ! text1 ) {
+        return;
+    }
     var text2 = svg.select("#filter")
       .attr("x", x + text1[0][0].getComputedTextLength() + 5)
       .attr("y", height - y - mydomain.length * ls_h - 1.5 * ls_h)
@@ -244,11 +247,11 @@ var countryScore = 0;
   setup(width, height);
 
   function setup(width, height) {
-    projection = d3.geo.naturalEarth()
+    projection = d3.geoNaturalEarth2()
       .translate([(width / 2), (height / 2) + height * 0.08])
       .scale(width / 1.7 / Math.PI);
 
-    path = d3.geo.path().projection(projection);
+    path = d3.geoPath().projection(projection);
 
     svg = d3.select("#map-container").append("svg")
       .attr("id", "map-svg")
@@ -289,7 +292,7 @@ var countryScore = 0;
     countryNames = JSON.parse(window.localStorage.countries);
   }
   //Load map
-  d3.json("assets/data/world-50m.json", function(error, world) {
+  d3.json("https://unpkg.com/world-atlas@1.1.4/world/50m.json", function(error, world) {
 
     var countries = topojson.feature(world, world.objects.countries).features;
 
