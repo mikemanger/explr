@@ -107,7 +107,7 @@ var CACHED_NO_COUNTRIES = JSON.parse(window.localStorage.no_countries || "{}");
                     a.playcount = +newArtist.playcount;
                     a.url = newArtist.url;
 
-                    a.image = [newArtist.image[3]];
+                    //a.image = [newArtist.image[3]];
 
                     STORED_ARTISTS[newArtist.name] = a;
                     artistNames.push(newArtist.name);
@@ -144,7 +144,7 @@ var CACHED_NO_COUNTRIES = JSON.parse(window.localStorage.no_countries || "{}");
 
                             artistList.forEach(function (el, i) {
                                 //Här lägger vi till ett fält image med artistens bild-url som ett fält till det "inre" objektet.
-                                artistList[i].image = STORED_ARTISTS[el.artist].image[0]["#text"];
+                                //artistList[i].image = STORED_ARTISTS[el.artist].image[0]["#text"];
                                 artistList[i].url = STORED_ARTISTS[el.artist].url;
                                 artistList[i].playcount = STORED_ARTISTS[el.artist].playcount;
                                 // if (artistList[i].users) {
