@@ -3,11 +3,19 @@ api/api.js
 api/lastfm.js
 */
 
-var STORED_ARTISTS = JSON.parse(window.localStorage.artists || "{}");
+var STORED_ARTISTS;
+localforage.getItem("artists", function (err, val) {
+    STORED_ARTISTS = val || {};
+});
+
+var CACHED_NO_COUNTRIES;
+localforage.getItem("no_countries", function (err, val) {
+    CACHED_NO_COUNTRIES = val || {};
+})
+
 var USER_TAGS = []; // JSON.parse(window.localStorage.user_tags || "[]");
 var CACHED_USERS = JSON.parse(window.localStorage.cached_users || "{}");
 var SESSION = {};
-var CACHED_NO_COUNTRIES = JSON.parse(window.localStorage.no_countries || "{}");
 
 (function () {
     // user = prompt("Input your user name, get top 20 artists")
@@ -34,7 +42,7 @@ var CACHED_NO_COUNTRIES = JSON.parse(window.localStorage.no_countries || "{}");
             noCountriesListEl.append("li").html('<a href="' + _art.url + '" target="blank" class="no-countries__link">' + _art.artist + '</a>');
         })
 
-        window.localStorage.no_countries = JSON.stringify(listOfArtistsWithNoCountry);
+        saveToStorage("no_countres", listOfArtistsWithNoCountry);
 
         if (listOfArtistsWithNoCountry.length) {
             d3.select(".no-countries").style({
@@ -46,7 +54,7 @@ var CACHED_NO_COUNTRIES = JSON.parse(window.localStorage.no_countries || "{}");
 
     var getAllArtists = function () {
         // console.log("get artists")
-        
+
         api.lastfm.send("library.getartists", [
                 ["user", user],
                 ["limit", 50],
@@ -72,8 +80,10 @@ var CACHED_NO_COUNTRIES = JSON.parse(window.localStorage.no_countries || "{}");
                         var refresh = confirm("Last.fm took too long to respond.\n\nPress OK to refresh the page and try again, or Cancel to use the page as it is.");
                         if (refresh) {
                             window.localStorage.clear();
-                            window.localStorage.artists = JSON.stringify(STORED_ARTISTS);
-                            window.location.reload();
+                            localforage.clear();
+                            saveToStorage("artists", STORED_ARTISTS, function () {
+                                window.location.reload()
+                            });
                         }
                     }
                     return;
@@ -107,12 +117,10 @@ var CACHED_NO_COUNTRIES = JSON.parse(window.localStorage.no_countries || "{}");
                     a.playcount = +newArtist.playcount;
                     a.url = newArtist.url;
 
-                    a.image = [newArtist.image[3]];
-
                     STORED_ARTISTS[newArtist.name] = a;
                     artistNames.push(newArtist.name);
                 })
-                window.localStorage.artists = JSON.stringify(STORED_ARTISTS);
+                saveToStorage("artists", STORED_ARTISTS);
                 // var n = count++;
 
                 // Get country for all artists
@@ -144,7 +152,6 @@ var CACHED_NO_COUNTRIES = JSON.parse(window.localStorage.no_countries || "{}");
 
                             artistList.forEach(function (el, i) {
                                 //Här lägger vi till ett fält image med artistens bild-url som ett fält till det "inre" objektet.
-                                artistList[i].image = STORED_ARTISTS[el.artist].image[0]["#text"];
                                 artistList[i].url = STORED_ARTISTS[el.artist].url;
                                 artistList[i].playcount = STORED_ARTISTS[el.artist].playcount;
                                 // if (artistList[i].users) {
@@ -219,7 +226,7 @@ var CACHED_NO_COUNTRIES = JSON.parse(window.localStorage.no_countries || "{}");
             }
         }
 
-        
+
         /*if (err || data.error) {
             console.error("Erorr in getUserTags", err, data);
             alert("Something went wrong when contacting the Last.fm API\n\nEither:\n - The specified user does not exist\n - Last.fm is down\n\nPlease try again.");
@@ -266,7 +273,7 @@ var CACHED_NO_COUNTRIES = JSON.parse(window.localStorage.no_countries || "{}");
                 api.lastfm.send("artist.gettoptags", [
                     ["artist", el.name]
                 ], function (err, data) {
-                    taglist = data.toptags.tag;
+                    taglist = data.toptags && data.toptags.tag;
                     if (taglist) {
                         var lim = Math.min(taglist.length, 10);
                         for (var i = 0; i < lim; i++) {
@@ -371,8 +378,11 @@ var CACHED_NO_COUNTRIES = JSON.parse(window.localStorage.no_countries || "{}");
             // TODO: use timestamp
             console.log("No new artists on last.fm!");
             countryCountObj = JSON.parse(window.localStorage.countryCountObj);
-            addArtistsWithNoCountry(JSON.parse(window.localStorage.no_countries));
-            
+
+            localforage.getItem("no_countries", function (err, val) {
+                addArtistsWithNoCountry(val || []);
+            });
+
             // Get number of artists for screenshot etc.
             api.lastfm.send("library.getartists", [
                     ["user", user],
@@ -462,5 +472,9 @@ var CACHED_NO_COUNTRIES = JSON.parse(window.localStorage.no_countries || "{}");
     } else {
         d3.select("#welcome-container").style("visibility", "visible");
         d3.select("#randomCountry").html(randomcountrylist[Math.floor(Math.random() * (randomcountrylist.length))] + "?")
+    }
+
+    var saveToStorage = function (key, object, cb) {
+        localforage.setItem(key, object, cb || function () {});
     }
 })();
